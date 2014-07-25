@@ -1,4 +1,3 @@
---[[
 # GithubAPI -- Port of GithubAPI v3 in Lua for Codea
 ## Work in progress
 
@@ -58,5 +57,3 @@ Some little examples (/!\ Could be change before release !)
 	end)
 
 ***
-
-]]--
