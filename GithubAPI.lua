@@ -30,10 +30,12 @@ local GithubAPI = {
         References = {},
         Tags = {},
         Trees = {}
-    }
+    },
+    Codea = {}
 }
 
 local Utilities = require "Utilities"
+local Codea = require "Codea"
 
 local request, required, uri, data, post, put, patch, delete, encode, decode =
         Utilities.request, Utilities.required, Utilities.uri, Utilities.data, Utilities.post, Utilities.put,
@@ -41,6 +43,8 @@ local request, required, uri, data, post, put, patch, delete, encode, decode =
 
 function GithubAPI:init()
     Utilities.init(self)
+    Codea.init(self)
+    self.Codea = Codea
 end
 
 -- Redirect users to request GitHub access --

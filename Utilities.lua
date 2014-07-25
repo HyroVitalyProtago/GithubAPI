@@ -1,15 +1,16 @@
 -- GithubAPI :: Utilities
 
+local GithubAPI = nil
 local Utilities = {}
 
--- Some utilities required Utilities.GithubAPI
+-- Some utilities required GithubAPI
 -- That's why init GithubAPI is needed
 
 local Base64 = require "Base64"
 local json = require "Dkjson"
 
 function Utilities.init(gitapi)
-    Utilities.GithubAPI = gitapi
+    GithubAPI = gitapi
 end
 
 function Utilities.request(url, callback, opts, fullUrl)
@@ -17,17 +18,17 @@ function Utilities.request(url, callback, opts, fullUrl)
     if not opts.headers then opts.headers = {} end
     
     -- set default headers
-    opts.headers.Accept = opts.headers.Accept or Utilities.GithubAPI.accept or nil
-    opts.headers.Authorization = opts.headers.Authorization or (Utilities.GithubAPI.token and "token " .. Utilities.GithubAPI.token or nil)
+    opts.headers.Accept = opts.headers.Accept or GithubAPI.accept or nil
+    opts.headers.Authorization = opts.headers.Authorization or (GithubAPI.token and "token " .. GithubAPI.token or nil)
     
     -- json encode data
     opts.data = opts.data and json.encode(opts.data) or nil
 
     -- set path absolute
-    url = fullUrl and url or Utilities.GithubAPI.location .. url
+    url = fullUrl and url or GithubAPI.location .. url
 
     -- debug mode
-    if Utilities.GithubAPI.debug then print(url) end
+    if GithubAPI.debug then print(url) end
     
     http.request(url, function(data, status, headers)
         data = json.decode(data)
@@ -120,7 +121,7 @@ end
 function Utilities.optstouri(args, ...)
     local tbl = {}
     for _,field in ipairs(arg) do
-        tbl[field] = args[field] or Utilities.GithubAPI.default[field] or nil
+        tbl[field] = args[field] or GithubAPI.default[field] or nil
     end
     return Utilities.argstouri(tbl)
 end
@@ -142,9 +143,9 @@ function Utilities.uri(url, args, opts) -- replace all :field by arg[field]
 end
 
 function Utilities.defaults(tbl) -- all defaults fields are set (if nil)
-    tbl.owner = tbl.owner or Utilities.GithubAPI.default.owner
-    tbl.repo = tbl.repo or Utilities.GithubAPI.default.repo
-    tbl.path = tbl.path or Utilities.GithubAPI.default.path
+    tbl.owner = tbl.owner or GithubAPI.default.owner
+    tbl.repo = tbl.repo or GithubAPI.default.repo
+    tbl.path = tbl.path or GithubAPI.default.path
     return tbl
 end
 

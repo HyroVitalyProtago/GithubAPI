@@ -1,12 +1,15 @@
-# GithubAPI -- Port of GithubAPI v3 in Lua for Codea
+# GithubAPI
+Port of GithubAPI v3 in Lua for Codea
+
 ## Work in progress
 
-A module called Github provide you some more complicated actions without direct calls to api.
+A module called Codea (inside GithubAPI) provide you some more complicated actions without direct calls to api.
 
 Examples:
 - Create a Github repository from your current project in Codea,
 - Download an entire project from Github directly into Codea project.
-- ...
+- Commit in codea branch of your project
+- Merge codea branch into master
 
 ### Functions
 
@@ -49,8 +52,7 @@ Some little examples (/!\ Could be change before release !)
 		sha = ...
 	}, response)
 	
-	Github.commit({
-		path = "GithubAPI", 
+	Github.Codea.commit({
 		message = "Commit of all current codea project in GithubAPI"
 	}, function()
 		print('Commit success !')
