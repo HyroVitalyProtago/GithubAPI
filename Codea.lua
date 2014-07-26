@@ -15,8 +15,9 @@ local function load(todo, callback)
         return load(todo, callback)
     end
     GithubAPI.Repositories.Contents.get({ path = current }, function(data)
-        if (data.name == "README.md" or data.name == "module.json") then data.content = '--[[\n' .. data.content .. '\n]]--' end
-        saveProjectTab("GitClient-Release:" .. data.name:gsub('%..*$', ''), data.content)
+        if (data.name == "README.md" or data.name == "package.json") then data.content = '--[[\n' .. data.content .. '\n]]--' end
+        error('@todo')
+        -- saveProjectTab("GitClient-Release:" .. data.name:gsub('%..*$', ''), data.content)
         f()
     end)
 end
@@ -81,7 +82,7 @@ local function getBlobs(conf, tree, callback)
         if k == "README" then
             path = k .. ".md"
             content = content:gsub('^%-%-%[%[\n', ''):gsub('\n%]%]%-%-$', '')
-        elseif k == "module" then
+        elseif k == "package" then
             path = k .. ".json"
             content = content:gsub('^%-%-%[%[\n', ''):gsub('\n%]%]%-%-$', '')
         else
@@ -117,6 +118,7 @@ function Codea.commit(conf, callback)
     -- first commit
     -- branch system (codea)
     -- push to master
+    -- version tags
     
     -- conf
     -- + mode : github, gist (++ CodeaCommunity)

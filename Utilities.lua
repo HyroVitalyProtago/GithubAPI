@@ -30,10 +30,14 @@ function Utilities.request(url, callback, opts, fullUrl)
     -- debug mode
     if GithubAPI.debug then print(url) end
     
+    -- success and fail callbacks
+    local success = type(callback) == "table" and callback.success or callback
+    local fail = type(callback) == "table" and callback.fail or alert
+    
     http.request(url, function(data, status, headers)
         data = json.decode(data)
-        callback(data, status, headers)
-    end, alert, opts)
+        success(data, status, headers)
+    end, fail, opts)
 end
 
 function Utilities.post(tbl)

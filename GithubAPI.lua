@@ -1,7 +1,4 @@
 -- GithubAPI :: GithubAPI
--- @Author : Hyro Vitaly Protago
--- @Version : 1.0.0
--- @Description : lib for call github api v3
 
 -- Pagination : page, per_page
 -- Link header : next, last, first, prev
@@ -306,12 +303,8 @@ end
 --- Repositories ---
 
 -- List your repositories
-function GithubAPI.Repositories.list.own(callback, type, sort, direction)
-    request("user/repos" .. argstouri({
-        type = type,
-        sort = sort,
-        direction = direction
-    }), callback)
+function GithubAPI.Repositories.list.own(arg, callback)
+    request(uri("user/repos", {}, {"type", "sort", "direction"}), callback)
 end
 
 -- List user repositories
