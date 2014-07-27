@@ -3,6 +3,8 @@
 local GithubAPI = nil
 local Codea = {}
 
+local json = require "Dkjson"
+
 function Codea.init(gitapi)
     GithubAPI = gitapi
 end
@@ -111,8 +113,31 @@ local function getBlobs(conf, tree, callback)
     end)
 end
 
+local function readPackageConf()
+    return json.decode((readProjectTab("package")):gsub('^%-%-%[%[\n', ''):gsub('\n%]%]%-%-$', ''))
+end
+
+local function savePackageConf(conf)
+    saveProjectTab("package", "--[[\n" .. json.encode(conf) .. "\n]]--")
+end
+
+local function patch(version)
+    
+end
+
 function Codea.commit(conf, callback)
     print("Wait, commit in progress...")
+    
+    local packageConf = readPackageConf()
+    
+    -- type : PATCH / MINOR / MAJOR
+    if (conf.type == "PATCH") then
+        packageConf.version = patch(packageConf.version)
+    elseif (conf.type == "MINOR") then
+    elseif (conf.type == "MAJOR") then
+    else
+        error("Codea.commit : type need to be PATCH or MINOR or MAJOR string.")
+    end
     
     -- @todo
     -- first commit
@@ -131,6 +156,8 @@ function Codea.commit(conf, callback)
     -- force ; default : false (reference update force)
     -- noRemove ; default : false (if true, all files in repository and not in Codea are not removed)
     -- filters (array of functionS - call on all files (path, content) return modified path, content)
+    
+    savePackageConf(packageConf)
     
     assert(conf.owner or GithubAPI.default.owner)
     GithubAPI.default.owner = conf.owner or GithubAPI.default.owner
@@ -176,8 +203,21 @@ function Codea.commit(conf, callback)
                                     sha = newCommitSha,
                                     -- force = true
                                 }, function(data)
-                                    print('Commit success !!')
-                                    callback(1)
+                                    local version = "v" .. packageConf.version
+                                    GithubAPI.GitData.Tags.create({
+                                        tag = version,
+                                        object = newCommitSha,
+                                        message = conf.type,
+                                        type = "commit"
+                                    }, function(data)
+                                        GithubAPI.GitData.References.create({
+                                            ref = "refs/tags/" .. version,
+                                            sha = data.sha
+                                        }, function(data)
+                                            print('Commit success !!')
+                                            callback(1)
+                                        end)
+                                    end)
                                 end)
                             end)
                         end
