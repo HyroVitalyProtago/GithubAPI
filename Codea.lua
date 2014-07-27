@@ -224,10 +224,12 @@ function Codea.commit(conf, callback)
                             print('Repository is already up to date !')
                             callback(0)
                         else
+                            local version = "v" .. packageConf.version -- commit prepend version
+                            
                             GithubAPI.GitData.Commits.create({
                                 parents = { commitSha },
                                 tree = newTreeSha,
-                                message = conf.message
+                                message = version .. " : " .. conf.message
                             }, function(data)
                                 local newCommitSha = data.sha
                                 GithubAPI.GitData.References.update({
@@ -235,9 +237,10 @@ function Codea.commit(conf, callback)
                                     sha = newCommitSha,
                                     -- force = true
                                 }, function(data)
-                                    local version = "v" .. packageConf.version
+                                    callback(1)
                                     
                                     -- Release
+                                    -- local version = "v" .. packageConf.version
                                     --[[
                                     GithubAPI.GitData.Tags.create({
                                         tag = version,
@@ -245,7 +248,6 @@ function Codea.commit(conf, callback)
                                         message = conf.type,
                                         type = "commit"
                                     }, function(data)
-                                    ]]--
                                         GithubAPI.GitData.References.create({
                                             ref = "refs/tags/" .. version,
                                             sha = newCommitSha -- data.sha
@@ -253,7 +255,8 @@ function Codea.commit(conf, callback)
                                             print('Commit success !!')
                                             callback(1)
                                         end)
-                                    -- end)
+                                    end)
+                                    ]]--
                                 end)
                             end)
                         end
