@@ -1,1 +1,11 @@
-{"type":"github","description":"Port of GithubAPI v3 in Lua for Codea","dependencies":{"gist@HyroVitalyProtago:Base64":"1.0.0","gist@HyroVitalyProtago:Dkjson":"1.0.0"},"author":"HyroVitalyProtago","name":"GithubAPI"}
+{
+	"type":"github",
+	"version":"0.0.1",
+	"dependencies":{
+		"gist@HyroVitalyProtago:Base64":"1.0.0",
+		"gist@HyroVitalyProtago:Dkjson":"1.0.0"
+	},
+	"author":"HyroVitalyProtago",
+	"name":"GithubAPI",
+	"description":"Port of GithubAPI v3 in Lua for Codea"
+}

@@ -117,12 +117,32 @@ local function readPackageConf()
     return json.decode((readProjectTab("package")):gsub('^%-%-%[%[\n', ''):gsub('\n%]%]%-%-$', ''))
 end
 
-local function savePackageConf(conf)
-    saveProjectTab("package", "--[[\n" .. json.encode(conf) .. "\n]]--")
+local function formatJson(js)
+    local function aux(js, acc, indent)
+        if js:len() == 0 then return acc end
+        acc = acc .. (string.rep("\t", indent))
+        local i = js:find('{')
+        local j = js:find('}')
+        local k = js:find(',')
+        local max = js:len()+1
+        if math.min(i or max, j or max, k or max) == k then
+            return aux(js:sub(k+1), acc .. js:sub(1,k) .. "\n", indent)
+        elseif math.min(i or max, j or max, k or max) == i then
+            return aux(js:sub(i+1), acc .. js:sub(1,i) .. "\n", indent + 1)
+        else
+            return aux(js:sub(j+2), acc .. js:sub(1,j-1) .. "\n" .. (string.rep("\t", indent-1)) .. "}," .. "\n", indent - 1)
+        end
+    end
+    return ((aux(js, "", 0)):gsub(",%s*$", ""))
+end
+
+local function savePackageConf(packageConf)
+    saveProjectTab("package", "--[[\n" .. formatJson(json.encode(packageConf)) .. "\n]]--")
 end
 
 local function patch(version)
-    
+    local major, minor, patch = string.match(version, '(%d).(%d).(%d)')
+    return string.format("%d.%d.%d", major, minor, patch + 1)
 end
 
 function Codea.commit(conf, callback)
