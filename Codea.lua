@@ -145,6 +145,16 @@ local function patch(version)
     return string.format("%d.%d.%d", major, minor, patch + 1)
 end
 
+local function minor(version)
+    local major, minor, patch = string.match(version, '(%d).(%d).(%d)')
+    return string.format("%d.%d.%d", major, minor + 1, 0)
+end
+
+local function major(version)
+    local major, minor, patch = string.match(version, '(%d).(%d).(%d)')
+    return string.format("%d.%d.%d", major + 1, 0, 0)
+end
+
 function Codea.commit(conf, callback)
     print("Wait, commit in progress...")
     
@@ -154,7 +164,9 @@ function Codea.commit(conf, callback)
     if (conf.type == "PATCH") then
         packageConf.version = patch(packageConf.version)
     elseif (conf.type == "MINOR") then
+        packageConf.version = minor(packageConf.version)
     elseif (conf.type == "MAJOR") then
+        packageConf.version = major(packageConf.version)
     else
         error("Codea.commit : type need to be PATCH or MINOR or MAJOR string.")
     end
@@ -224,20 +236,24 @@ function Codea.commit(conf, callback)
                                     -- force = true
                                 }, function(data)
                                     local version = "v" .. packageConf.version
+                                    
+                                    -- Release
+                                    --[[
                                     GithubAPI.GitData.Tags.create({
                                         tag = version,
                                         object = newCommitSha,
                                         message = conf.type,
                                         type = "commit"
                                     }, function(data)
+                                    ]]--
                                         GithubAPI.GitData.References.create({
                                             ref = "refs/tags/" .. version,
-                                            sha = data.sha
+                                            sha = newCommitSha -- data.sha
                                         }, function(data)
                                             print('Commit success !!')
                                             callback(1)
                                         end)
-                                    end)
+                                    -- end)
                                 end)
                             end)
                         end

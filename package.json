@@ -1,11 +1,11 @@
 {
 	"type":"github",
-	"version":"0.0.1",
+	"version":"0.0.2",
 	"dependencies":{
 		"gist@HyroVitalyProtago:Base64":"1.0.0",
 		"gist@HyroVitalyProtago:Dkjson":"1.0.0"
 	},
 	"author":"HyroVitalyProtago",
-	"name":"GithubAPI",
-	"description":"Port of GithubAPI v3 in Lua for Codea"
+	"description":"Port of GithubAPI v3 in Lua for Codea",
+	"name":"GithubAPI"
 }
